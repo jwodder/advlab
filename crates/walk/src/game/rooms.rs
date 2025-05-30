@@ -16,15 +16,15 @@ pub(crate) enum Room {
 impl Room {
     pub(crate) fn long_description(&self) -> &str {
         match self {
-            Room::NorthWest => "You are in the north-west room.", // TODO: Expand
-            Room::North => "You are in the north room.  It is very cold.",
-            Room::NorthEast => "You are in the north-east room.", // TODO: Expand
-            Room::West => "You are in the west room.  A mural of a full moon decorates the wall.",
-            Room::Center => "You are in the center room.  There is an empty tick-tack-toe grid carved onto the floor.",
+            Room::NorthWest => "You are in the north-west room.  A banquet was set here, but someone has already eaten everything.",
+            Room::North => "You are in the north room.  It is very cold here.",
+            Room::NorthEast => "You are in the north-east room.  There are numerous comfortable chairs, and the floor is covered in cushions.",
+            Room::West => "You are in the west room.  A painting of a full moon rests on an easel.",
+            Room::Center => "You are in the center room.  There is an empty tick-tack-toe grid carved into the floor.",
             Room::East => "You are in the east room.  A mural of the rising sun decorates the wall.",
-            Room::SouthWest => "You are in the south-west room.", // TODO: Expand
-            Room::South => "You are in the south room.  A photograph of a penguin couple hangs on the wall.",
-            Room::SouthEast => "You are in the south-east room.", // TODO: Expand
+            Room::SouthWest => "You are in the south-west room.  The walls are lined with bookcases packed with books.",
+            Room::South => "You are in the south room.  Antarctic memorabilia are scattered about.  A photograph of a penguin couple hangs on the wall.",
+            Room::SouthEast => "You are in the south-east room.  Secret plans for more games are scattered about!",
         }
     }
 
