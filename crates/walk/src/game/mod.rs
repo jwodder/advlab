@@ -58,7 +58,7 @@ impl GameEngine for Game {
                 if let Some(room) = self.travel.get(&(self.location, m)).copied() {
                     self.move_to(room)
                 } else {
-                    "There's no way to go in that direction.".to_owned()
+                    String::from("There's no way to go in that direction.")
                 }
             }
             Ok(Command::Examine) => self.location.long_description().to_owned(),
@@ -66,7 +66,7 @@ impl GameEngine for Game {
                 if let Some(prev) = self.prev_location {
                     self.move_to(prev)
                 } else {
-                    "You weren't anywhere else before here.".to_owned()
+                    String::from("You weren't anywhere else before here.")
                 }
             }
             Ok(Command::Quit) => {
@@ -79,3 +79,6 @@ impl GameEngine for Game {
         Output::Continue { game: self, text }
     }
 }
+
+#[cfg(test)]
+mod tests;
