@@ -74,6 +74,7 @@ impl GameEngine for Game {
                     text: String::from("Be seeing you..."),
                 }
             }
+            Ok(Command::Nop) => String::new(),
             Err(e) => e.to_string(),
         };
         Output::Continue { game: self, text }

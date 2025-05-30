@@ -35,16 +35,22 @@ pub(crate) enum Command {
     Examine,
     Back,
     Quit,
+    Nop,
 }
 
 impl std::str::FromStr for Command {
     type Err = CommandError;
 
     fn from_str(s: &str) -> Result<Command, CommandError> {
-        VOCABULARY
-            .get(&UniCase::ascii(s.trim()))
-            .copied()
-            .ok_or(CommandError)
+        let s = s.trim();
+        if s.is_empty() {
+            Ok(Command::Nop)
+        } else {
+            VOCABULARY
+                .get(&UniCase::ascii(s))
+                .copied()
+                .ok_or(CommandError)
+        }
     }
 }
 

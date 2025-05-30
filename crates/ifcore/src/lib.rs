@@ -43,11 +43,19 @@ pub fn run_game<G: GameBuilder>(game: G) -> io::Result<()> {
         if !std::mem::replace(&mut first, false) {
             writeln!(&mut stdout)?;
         }
-        writeln!(&mut stdout, "{}", r.text())?;
+        let text = r.text();
+        let nonempty_output = if !text.is_empty() {
+            writeln!(&mut stdout, "{}", r.text())?;
+            true
+        } else {
+            false
+        };
         let Some(game) = r.into_game() else {
             break;
         };
-        writeln!(&mut stdout)?;
+        if nonempty_output {
+            writeln!(&mut stdout)?;
+        }
         write!(&mut stdout, "> ")?;
         stdout.flush()?;
         let mut input = String::new();
