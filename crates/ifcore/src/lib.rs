@@ -1,4 +1,4 @@
-use std::io::{self, BufRead};
+use std::io::{self, BufRead, Write};
 
 pub trait GameBuilder: Sized {
     type Engine: GameEngine;
@@ -37,17 +37,19 @@ impl<G> Output<G> {
 pub fn run_game<G: GameBuilder>(game: G) -> io::Result<()> {
     let mut first = true;
     let mut stdin = io::stdin().lock();
+    let mut stdout = io::stdout().lock();
     let mut r = game.start();
     loop {
         if !std::mem::replace(&mut first, false) {
-            println!();
+            writeln!(&mut stdout)?;
         }
-        println!("{}", r.text());
+        writeln!(&mut stdout, "{}", r.text())?;
         let Some(game) = r.into_game() else {
             break;
         };
-        println!();
-        print!("> ");
+        writeln!(&mut stdout)?;
+        write!(&mut stdout, "> ")?;
+        stdout.flush()?;
         let mut input = String::new();
         stdin.read_line(&mut input)?;
         r = game.handle_input(&input);
