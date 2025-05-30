@@ -54,3 +54,60 @@ pub fn run_game<G: GameBuilder>(game: G) -> io::Result<()> {
     }
     Ok(())
 }
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Tester<G> {
+    game: Option<G>,
+    last_output: Option<String>,
+}
+
+impl<G: GameEngine> Tester<G> {
+    pub fn start<B: GameBuilder<Engine = G>>(builder: B) -> Self {
+        builder.start().into()
+    }
+
+    pub fn input(&mut self, input: &str) {
+        let Some(game) = self.game.take() else {
+            panic!("Tester::input() called after game finished");
+        };
+        *self = game.handle_input(input).into();
+    }
+
+    pub fn assert_output<S: AsRef<str>>(&self, output: S) {
+        if let Some(prev) = self.last_output.as_deref() {
+            assert_eq!(prev, output.as_ref());
+        } else {
+            panic!("Tester::assert_output() called with no previous output");
+        }
+    }
+
+    pub fn game(&self) -> &G {
+        match self.game.as_ref() {
+            Some(game) => game,
+            None => panic!("Tester::game() called after game finished"),
+        }
+    }
+
+    pub fn done(&self) -> bool {
+        self.game.is_none()
+    }
+}
+
+impl<G: GameEngine> From<G> for Tester<G> {
+    fn from(game: G) -> Tester<G> {
+        Tester {
+            game: Some(game),
+            last_output: None,
+        }
+    }
+}
+
+impl<G: GameEngine> From<Output<G>> for Tester<G> {
+    fn from(output: Output<G>) -> Tester<G> {
+        let (game, last_output) = match output {
+            Output::Continue { game, text } => (Some(game), Some(text)),
+            Output::Goodbye { text } => (None, Some(text)),
+        };
+        Tester { game, last_output }
+    }
+}
