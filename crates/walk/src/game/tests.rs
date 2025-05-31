@@ -1,5 +1,5 @@
 use super::*;
-use ifcore::Tester;
+use advcore::Tester;
 
 #[test]
 fn noback() {

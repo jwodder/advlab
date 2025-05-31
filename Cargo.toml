@@ -5,8 +5,8 @@ resolver = "2"
 [workspace.package]
 edition = "2021"
 rust-version = "1.79"
-authors = ["John Thorvald Wodder II <iflab@varonathe.org>"]
-#repository = "https://github.com/jwodder/iflab"
+authors = ["John Thorvald Wodder II <advlab@varonathe.org>"]
+#repository = "https://github.com/jwodder/advlab"
 license = "MIT"
 publish = false
 

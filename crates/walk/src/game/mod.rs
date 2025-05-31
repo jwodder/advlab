@@ -5,7 +5,7 @@ mod vocab;
 use self::entities::Entity;
 use self::rooms::Room;
 use self::vocab::{Command, Motion};
-use ifcore::{GameBuilder, GameEngine, Output};
+use advcore::{GameBuilder, GameEngine, Output};
 use std::collections::{HashMap, HashSet};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
