@@ -1,4 +1,6 @@
-use std::io::{self, BufRead, Write};
+mod interface;
+pub use crate::interface::*;
+use std::io;
 
 pub trait GameBuilder: Sized {
     type Engine: GameEngine;
@@ -34,35 +36,16 @@ impl<G> Output<G> {
     }
 }
 
-pub fn run_game<G: GameBuilder>(game: G) -> io::Result<()> {
-    let mut first = true;
-    let mut stdin = io::stdin().lock();
-    let mut stdout = io::stdout().lock();
+pub fn run_game<IC: InterfaceContext, G: GameBuilder>(ifctx: IC, game: G) -> io::Result<()> {
     let mut r = game.start();
-    loop {
-        if !std::mem::replace(&mut first, false) {
-            writeln!(&mut stdout)?;
-        }
-        let text = r.text();
-        let nonempty_output = if !text.is_empty() {
-            writeln!(&mut stdout, "{}", r.text())?;
-            true
-        } else {
-            false
-        };
+    ifctx.with_interface(move |iface| loop {
+        iface.show_output(r.text())?;
         let Some(game) = r.into_game() else {
-            break;
+            return Ok(());
         };
-        if nonempty_output {
-            writeln!(&mut stdout)?;
-        }
-        write!(&mut stdout, "> ")?;
-        stdout.flush()?;
-        let mut input = String::new();
-        stdin.read_line(&mut input)?;
+        let input = iface.get_input()?;
         r = game.handle_input(&input);
-    }
-    Ok(())
+    })
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
