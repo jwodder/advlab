@@ -22,7 +22,7 @@ impl Room {
             Room::West => "You are in the west room.  A painting of a full moon rests on an easel.",
             Room::Center => "You are in the center room.  There is an empty tick-tack-toe grid carved into the floor.",
             Room::East => "You are in the east room.  A mural of the rising sun decorates the wall.",
-            Room::SouthWest => "You are in the south-west room.  The walls are lined with bookcases packed with books.",
+            Room::SouthWest => "You are in the south-west room.  The walls are lined with shelves packed with books.",
             Room::South => "You are in the south room.  Antarctic memorabilia are scattered about.  A photograph of a penguin couple hangs on the wall.",
             Room::SouthEast => "You are in the south-east room.  Secret plans for more games are scattered about!",
         }
