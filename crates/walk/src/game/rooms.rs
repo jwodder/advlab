@@ -1,5 +1,3 @@
-use super::vocab::Motion;
-
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub(crate) enum Room {
     NorthWest,
@@ -16,15 +14,19 @@ pub(crate) enum Room {
 impl Room {
     pub(crate) fn long_description(&self) -> &str {
         match self {
-            Room::NorthWest => "You are in the north-west room.  A banquet was set here, but someone has already eaten everything.",
+            Room::NorthWest => {
+                "You are in the north-west room.  A delicious smell lingers in the air."
+            }
             Room::North => "You are in the north room.  It is very cold here.",
-            Room::NorthEast => "You are in the north-east room.  There are numerous comfortable chairs, and the floor is covered in cushions.",
-            Room::West => "You are in the west room.  A painting of a full moon rests on an easel.",
-            Room::Center => "You are in the center room.  There is an empty tick-tack-toe grid carved into the floor.",
-            Room::East => "You are in the east room.  A mural of the rising sun decorates the wall.",
-            Room::SouthWest => "You are in the south-west room.  The walls are lined with shelves packed with books.",
-            Room::South => "You are in the south room.  Antarctic memorabilia are scattered about.  A photograph of a penguin couple hangs on the wall.",
-            Room::SouthEast => "You are in the south-east room.  Secret plans for more games are scattered about!",
+            Room::NorthEast => "You are in the north-east room.",
+            Room::West => "You are in the west room.  The lights are turned down low.",
+            Room::Center => {
+                "You are in the center room.  Doors lead out in all cardinal directions."
+            }
+            Room::East => "You are in the east room.  It gives off a bright & cheery air.",
+            Room::SouthWest => "You are in the south-west room.",
+            Room::South => "You are in the south room.  Antarctic memorabilia are scattered about.",
+            Room::SouthEast => "You are in the south-east room.",
         }
     }
 
@@ -42,30 +44,3 @@ impl Room {
         }
     }
 }
-
-pub(crate) const TRAVEL_TABLE: [((Room, Motion), Room); 24] = [
-    ((Room::NorthWest, Motion::East), Room::North),
-    ((Room::NorthWest, Motion::South), Room::West),
-    ((Room::North, Motion::West), Room::NorthWest),
-    ((Room::North, Motion::South), Room::Center),
-    ((Room::North, Motion::East), Room::NorthEast),
-    ((Room::NorthEast, Motion::West), Room::North),
-    ((Room::NorthEast, Motion::South), Room::East),
-    ((Room::West, Motion::North), Room::NorthWest),
-    ((Room::West, Motion::East), Room::Center),
-    ((Room::West, Motion::South), Room::SouthWest),
-    ((Room::Center, Motion::North), Room::North),
-    ((Room::Center, Motion::East), Room::East),
-    ((Room::Center, Motion::West), Room::West),
-    ((Room::Center, Motion::South), Room::South),
-    ((Room::East, Motion::North), Room::NorthEast),
-    ((Room::East, Motion::West), Room::Center),
-    ((Room::East, Motion::South), Room::SouthEast),
-    ((Room::SouthWest, Motion::East), Room::South),
-    ((Room::SouthWest, Motion::North), Room::West),
-    ((Room::South, Motion::West), Room::SouthWest),
-    ((Room::South, Motion::North), Room::Center),
-    ((Room::South, Motion::East), Room::SouthEast),
-    ((Room::SouthEast, Motion::West), Room::South),
-    ((Room::SouthEast, Motion::North), Room::East),
-];

@@ -1,6 +1,9 @@
+mod data;
+mod entities;
 mod rooms;
 mod vocab;
-use self::rooms::{Room, TRAVEL_TABLE};
+use self::entities::Entity;
+use self::rooms::Room;
 use self::vocab::{Command, Motion};
 use ifcore::{GameBuilder, GameEngine, Output};
 use std::collections::{HashMap, HashSet};
@@ -12,16 +15,8 @@ impl GameBuilder for Builder {
     type Engine = Game;
 
     fn start(self) -> Output<Game> {
-        let travel = HashMap::from(TRAVEL_TABLE);
-        let location = Room::Center;
-        let visited = HashSet::new();
-        let mut game = Game {
-            travel,
-            location,
-            prev_location: None,
-            visited,
-        };
-        let text = game.show_location();
+        let mut game = Game::new();
+        let text = game.show_location(None);
         Output::Continue { game, text }
     }
 }
@@ -32,22 +27,45 @@ pub(crate) struct Game {
     location: Room,
     prev_location: Option<Room>,
     visited: HashSet<Room>,
+    fixed: HashMap<Entity, Room>,
 }
 
 impl Game {
-    fn show_location(&mut self) -> String {
-        let first_time = self.visited.insert(self.location);
-        if first_time {
+    fn new() -> Game {
+        let travel = HashMap::from(data::TRAVEL_TABLE);
+        let location = Room::Center;
+        let visited = HashSet::new();
+        let fixed = HashMap::from(data::FIXED_ENTITIES);
+        Game {
+            travel,
+            location,
+            prev_location: None,
+            visited,
+            fixed,
+        }
+    }
+
+    fn show_location(&mut self, long: Option<bool>) -> String {
+        let long = long.unwrap_or_else(|| self.visited.insert(self.location));
+        let mut s = if long {
             self.location.long_description().to_owned()
         } else {
             self.location.short_description().to_owned()
+        };
+        for (&en, &rm) in &self.fixed {
+            if rm == self.location {
+                s.push('\n');
+                s.push('\n');
+                s.push_str(en.describe());
+            }
         }
+        s
     }
 
     fn move_to(&mut self, room: Room) -> String {
         self.prev_location = Some(self.location);
         self.location = room;
-        self.show_location()
+        self.show_location(None)
     }
 }
 
@@ -61,7 +79,14 @@ impl GameEngine for Game {
                     String::from("There's no way to go in that direction.")
                 }
             }
-            Ok(Command::Examine) => self.location.long_description().to_owned(),
+            Ok(Command::Examine(None)) => self.show_location(Some(true)),
+            Ok(Command::Examine(Some(en))) => {
+                if self.fixed.get(&en) == Some(&self.location) {
+                    en.examine().to_owned()
+                } else {
+                    String::from("That isn't here.")
+                }
+            }
             Ok(Command::Back) => {
                 if let Some(prev) = self.prev_location {
                     self.move_to(prev)

@@ -27,11 +27,27 @@ fn back() {
 #[test]
 fn room_descriptions() {
     let mut t = Tester::start(Builder);
-    t.assert_output(Room::Center.long_description());
+    t.assert_output(format!(
+        "{}\n\n{}",
+        Room::Center.long_description(),
+        Entity::TicTacToe.describe()
+    ));
     t.input("NORTH");
-    t.assert_output(Room::North.long_description());
+    t.assert_output(format!(
+        "{}\n\n{}",
+        Room::North.long_description(),
+        Entity::Globe.describe()
+    ));
     t.input("SOUTH");
-    t.assert_output(Room::Center.short_description());
+    t.assert_output(format!(
+        "{}\n\n{}",
+        Room::Center.short_description(),
+        Entity::TicTacToe.describe()
+    ));
     t.input("EXAMINE");
-    t.assert_output(Room::Center.long_description());
+    t.assert_output(format!(
+        "{}\n\n{}",
+        Room::Center.long_description(),
+        Entity::TicTacToe.describe()
+    ));
 }
