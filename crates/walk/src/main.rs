@@ -1,5 +1,6 @@
 mod game;
+use ifcore::{io_exit, run_game, StandardInterface};
 
-fn main() -> std::io::Result<()> {
-    ifcore::run_game(ifcore::StandardInterface, game::Builder)
+fn main() -> std::process::ExitCode {
+    io_exit(run_game(StandardInterface, game::Builder))
 }

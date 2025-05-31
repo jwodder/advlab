@@ -1,6 +1,7 @@
 mod interface;
 pub use crate::interface::*;
-use std::io;
+use std::io::{self, ErrorKind};
+use std::process::ExitCode;
 
 pub trait GameBuilder: Sized {
     type Engine: GameEngine;
@@ -46,6 +47,17 @@ pub fn run_game<IC: InterfaceContext, G: GameBuilder>(ifctx: IC, game: G) -> io:
         let input = iface.get_input()?;
         r = game.handle_input(&input);
     })
+}
+
+pub fn io_exit(r: io::Result<()>) -> ExitCode {
+    match r {
+        Ok(()) => ExitCode::SUCCESS,
+        Err(e) if e.kind() == ErrorKind::BrokenPipe => ExitCode::SUCCESS,
+        Err(e) => {
+            eprintln!("{e}");
+            ExitCode::from(2)
+        }
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
