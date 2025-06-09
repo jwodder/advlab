@@ -1,6 +1,6 @@
 use std::io::{self, BufRead, Write};
 
-pub trait InterfaceContext {
+pub trait InterfaceProvider {
     type Interface: Interface;
 
     fn with_interface<F>(self, func: F) -> io::Result<()>
@@ -34,7 +34,7 @@ impl<R, W> BasicInterface<R, W> {
     }
 }
 
-impl<R: BufRead, W: Write> InterfaceContext for BasicInterface<R, W> {
+impl<R: BufRead, W: Write> InterfaceProvider for BasicInterface<R, W> {
     type Interface = Self;
 
     fn with_interface<F>(mut self, func: F) -> io::Result<()>
@@ -80,7 +80,7 @@ impl<R: BufRead, W: Write> Interface for BasicInterface<R, W> {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct StandardInterface;
 
-impl InterfaceContext for StandardInterface {
+impl InterfaceProvider for StandardInterface {
     type Interface = BasicInterface<io::StdinLock<'static>, io::StdoutLock<'static>>;
 
     fn with_interface<F>(self, func: F) -> io::Result<()>

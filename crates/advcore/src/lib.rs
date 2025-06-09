@@ -37,9 +37,9 @@ impl<G> Output<G> {
     }
 }
 
-pub fn run_game<IC: InterfaceContext, G: GameBuilder>(ifctx: IC, game: G) -> io::Result<()> {
+pub fn run_game<IC: InterfaceProvider, G: GameBuilder>(ifprov: IC, game: G) -> io::Result<()> {
     let mut r = game.start();
-    ifctx.with_interface(move |iface| loop {
+    ifprov.with_interface(move |iface| loop {
         iface.show_output(r.text())?;
         let Some(game) = r.into_game() else {
             return Ok(());
