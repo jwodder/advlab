@@ -10,7 +10,9 @@ pub trait InterfaceContext {
 
 pub trait Interface {
     fn show_output(&mut self, text: &str) -> io::Result<()>;
-    fn get_input(&mut self) -> io::Result<String>;
+
+    // Returns None on end of input
+    fn get_input(&mut self) -> io::Result<Option<String>>;
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -57,7 +59,7 @@ impl<R: BufRead, W: Write> Interface for BasicInterface<R, W> {
         Ok(())
     }
 
-    fn get_input(&mut self) -> io::Result<String> {
+    fn get_input(&mut self) -> io::Result<Option<String>> {
         if self.wrote_last_output {
             writeln!(&mut self.writer)?;
         }
@@ -65,8 +67,13 @@ impl<R: BufRead, W: Write> Interface for BasicInterface<R, W> {
         self.writer.flush()?;
         self.wrote_prompt = true;
         let mut input = String::new();
-        self.reader.read_line(&mut input)?;
-        Ok(input)
+        if self.reader.read_line(&mut input)? != 0 {
+            Ok(Some(input))
+        } else {
+            // Force the start of a new line:
+            writeln!(&mut self.writer)?;
+            Ok(None)
+        }
     }
 }
 

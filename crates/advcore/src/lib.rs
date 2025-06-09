@@ -44,7 +44,10 @@ pub fn run_game<IC: InterfaceContext, G: GameBuilder>(ifctx: IC, game: G) -> io:
         let Some(game) = r.into_game() else {
             return Ok(());
         };
-        let input = iface.get_input()?;
+        let Some(input) = iface.get_input()? else {
+            // End of input
+            return Ok(());
+        };
         r = game.handle_input(&input);
     })
 }
