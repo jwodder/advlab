@@ -3,15 +3,19 @@ use std::io::{self, BufRead, Write};
 pub trait InterfaceProvider {
     type Interface: Interface;
 
+    /// Run `func` with the associated `Interface`.
     fn with_interface<F>(self, func: F) -> io::Result<()>
     where
         F: FnOnce(&mut Self::Interface) -> io::Result<()>;
 }
 
 pub trait Interface {
+    /// Display the given text in the interface.
     fn show_output(&mut self, text: &str) -> io::Result<()>;
 
-    // Returns None on end of input
+    /// Read a line of input from the interface.
+    ///
+    /// Returns `None` on end of input.
     fn get_input(&mut self) -> io::Result<Option<String>>;
 }
 
