@@ -14,8 +14,8 @@ The workspace contains the following packages, in order of creation:
 
 - [`advcore`][] — Core library of common code
 
-- [`walk`][] — A text adventure (using the term loosely) in which you walk
-  around some rooms and look at stuff
+- [`walk`][] — A text adventure in which you walk around some rooms and look at
+  stuff
 
 [workspace]: https://doc.rust-lang.org/cargo/reference/workspaces.html
 [txtadv]: https://en.wikipedia.org/wiki/Text_adventure
