@@ -51,3 +51,36 @@ fn room_descriptions() {
         Entity::TicTacToe.describe()
     ));
 }
+
+#[test]
+fn reading() {
+    let mut t = Tester::start(Builder);
+    t.input("READ");
+    t.assert_output("There's nothing here to read.");
+    t.input("READ GRID");
+    t.assert_output("You can't read that.");
+    t.input("READ BOOKS");
+    t.assert_output("That isn't here.");
+    t.input("READ PLANS");
+    t.assert_output("That isn't here.");
+    t.input("SOUTH");
+    t.input("WEST");
+    t.input("READ");
+    t.assert_output("You sit and read for a while.");
+    t.input("READ GRID");
+    t.assert_output("That isn't here.");
+    t.input("READ BOOKS");
+    t.assert_output("You sit and read for a while.");
+    t.input("READ PLANS");
+    t.assert_output("That isn't here.");
+    t.input("EAST");
+    t.input("EAST");
+    t.input("READ");
+    t.assert_output("The plans are all written in code.  You can't make heads or tails of them.");
+    t.input("READ GRID");
+    t.assert_output("That isn't here.");
+    t.input("READ BOOKS");
+    t.assert_output("That isn't here.");
+    t.input("READ PLANS");
+    t.assert_output("The plans are all written in code.  You can't make heads or tails of them.");
+}

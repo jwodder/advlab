@@ -17,4 +17,6 @@ All vocabulary is case-insensitive.
 - `BACK`, `RETURN`, `RETREAT` — Return to the previous room
 - `EXAMINE`, `LOOK`, `DESCRIBE` — Print the full description of the current
   room.  When used with an object, print a long description of that object.
+- `READ` — Read a readable object.  When not used with an object, there must be
+  a readable object in the current room.
 - `QUIT`, `EXIT` — Quit the game
