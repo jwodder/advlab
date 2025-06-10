@@ -42,4 +42,14 @@ impl Entity {
             Entity::TicTacToe => "X and O are locked in a dead heat.",
         }
     }
+
+    pub(crate) fn read(&self) -> Option<&'static str> {
+        match self {
+            Entity::Books => Some("You sit and read for a while."),
+            Entity::SecretPlans => {
+                Some("The plans are all written in code.  You can't make heads or tails of them.")
+            }
+            _ => None,
+        }
+    }
 }

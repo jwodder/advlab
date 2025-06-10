@@ -87,6 +87,29 @@ impl GameEngine for Game {
                     String::from("That isn't here.")
                 }
             }
+            Ok(Command::Read(None)) => self
+                .fixed
+                .iter()
+                .find_map(|(&en, &room)| {
+                    if room == self.location {
+                        en.read()
+                    } else {
+                        None
+                    }
+                })
+                .unwrap_or("There's nothing here to read.")
+                .to_owned(),
+            Ok(Command::Read(Some(en))) => {
+                if self.fixed.get(&en) == Some(&self.location) {
+                    if let Some(desc) = en.read() {
+                        desc.to_owned()
+                    } else {
+                        String::from("You can't read that.")
+                    }
+                } else {
+                    String::from("That isn't here.")
+                }
+            }
             Ok(Command::Back) => {
                 if let Some(prev) = self.prev_location {
                     self.move_to(prev)

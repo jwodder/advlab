@@ -31,6 +31,7 @@ pub(crate) enum Motion {
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub(crate) enum Action {
     Examine,
+    Read,
     Back,
     Quit,
 }
@@ -39,6 +40,7 @@ pub(crate) enum Action {
 pub(crate) enum Command {
     Motion(Motion),
     Examine(Option<Entity>),
+    Read(Option<Entity>),
     Back,
     Quit,
     Nop,
@@ -48,6 +50,7 @@ impl From<Action> for Command {
     fn from(value: Action) -> Command {
         match value {
             Action::Examine => Command::Examine(None),
+            Action::Read => Command::Read(None),
             Action::Back => Command::Back,
             Action::Quit => Command::Quit,
         }
@@ -66,6 +69,7 @@ impl std::str::FromStr for Command {
             [Word::Motion(m)] => Ok(Command::Motion(*m)),
             [Word::Action(act)] => Ok(Command::from(*act)),
             [Word::Action(Action::Examine), Word::Entity(en)] => Ok(Command::Examine(Some(*en))),
+            [Word::Action(Action::Read), Word::Entity(en)] => Ok(Command::Read(Some(*en))),
             [] => Ok(Command::Nop),
             _ => Err(CommandError::BadGrammar),
         }

@@ -16,6 +16,7 @@ pub(crate) static VOCABULARY: Map<UniCase<&'static str>, Word> = phf_map! {
     UniCase::ascii("EXAMINE") => Word::Action(Action::Examine),
     UniCase::ascii("LOOK") => Word::Action(Action::Examine),
     UniCase::ascii("DESCRIBE") => Word::Action(Action::Examine),
+    UniCase::ascii("READ") => Word::Action(Action::Read),
     UniCase::ascii("BACK") => Word::Action(Action::Back),
     UniCase::ascii("RETURN") => Word::Action(Action::Back),
     UniCase::ascii("RETREAT") => Word::Action(Action::Back),
