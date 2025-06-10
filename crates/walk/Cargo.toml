@@ -16,3 +16,6 @@ unicase = "2.8.1"
 
 [lints]
 workspace = true
+
+[dev-dependencies]
+rstest = { version = "0.25.0", default-features = false }

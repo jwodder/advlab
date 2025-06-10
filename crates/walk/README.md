@@ -16,7 +16,9 @@ All vocabulary is case-insensitive.
 - `S`, `SOUTH`
 - `BACK`, `RETURN`, `RETREAT` — Return to the previous room
 - `EXAMINE`, `LOOK`, `DESCRIBE` — Print the full description of the current
-  room.  When used with an object, print a long description of that object.
+  room.  When used with an object, print a detailed description of that object.
+    - "`ROOM`" may also be used as an object for this command.
+    - Additional syntaxes: `LOOK AT ⟨object⟩`, `LOOK @ ⟨object⟩`
 - `READ` — Read a readable object.  When not used with an object, there must be
   a readable object in the current room.
 - `QUIT`, `EXIT` — Quit the game

@@ -7,6 +7,9 @@ pub(crate) enum Word {
     Motion(Motion),
     Action(Action),
     Entity(Entity),
+    Look,
+    At,
+    Room,
 }
 
 impl std::str::FromStr for Word {
@@ -68,7 +71,13 @@ impl std::str::FromStr for Command {
         match words.as_slice() {
             [Word::Motion(m)] => Ok(Command::Motion(*m)),
             [Word::Action(act)] => Ok(Command::from(*act)),
-            [Word::Action(Action::Examine), Word::Entity(en)] => Ok(Command::Examine(Some(*en))),
+            [Word::Action(Action::Examine) | Word::Look, Word::Room] => Ok(Command::Examine(None)),
+            [Word::Action(Action::Examine) | Word::Look, Word::Entity(en)] => {
+                Ok(Command::Examine(Some(*en)))
+            }
+            [Word::Look] => Ok(Command::Examine(None)),
+            [Word::Look, Word::At, Word::Room] => Ok(Command::Examine(None)),
+            [Word::Look, Word::At, Word::Entity(en)] => Ok(Command::Examine(Some(*en))),
             [Word::Action(Action::Read), Word::Entity(en)] => Ok(Command::Read(Some(*en))),
             [] => Ok(Command::Nop),
             _ => Err(CommandError::BadGrammar),
@@ -87,3 +96,27 @@ pub(crate) enum CommandError {
 #[derive(Clone, Debug, Eq, Error, PartialEq)]
 #[error("I don't know what {0:?} means.")]
 pub(crate) struct WordError(String);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rstest::rstest;
+
+    #[rstest]
+    #[case("EXAMINE", Ok(Command::Examine(None)))]
+    #[case("EXAMINE ROOM", Ok(Command::Examine(None)))]
+    #[case("LOOK", Ok(Command::Examine(None)))]
+    #[case("LOOK ROOM", Ok(Command::Examine(None)))]
+    #[case("LOOK AT ROOM", Ok(Command::Examine(None)))]
+    #[case("LOOK BOOK", Ok(Command::Examine(Some(Entity::Books))))]
+    #[case("LOOK AT BOOK", Ok(Command::Examine(Some(Entity::Books))))]
+    #[case("LOOK @ BOOK", Ok(Command::Examine(Some(Entity::Books))))]
+    #[case("LOOK AT", Err(CommandError::BadGrammar))]
+    #[case("EXAMINE AT", Err(CommandError::BadGrammar))]
+    #[case("EXAMINE AT ROOM", Err(CommandError::BadGrammar))]
+    #[case("EXAMINE AT BOOK", Err(CommandError::BadGrammar))]
+    fn parse_command(#[case] s: &str, #[case] r: Result<Command, CommandError>) {
+        let got = s.parse::<Command>();
+        assert_eq!(got, r, "wrong parse for {s:?}");
+    }
+}
