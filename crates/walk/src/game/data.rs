@@ -1,7 +1,7 @@
 use super::entities::Entity;
 use super::rooms::Room;
 use super::vocab::{Action, Motion, Word};
-use phf::{phf_map, Map};
+use phf::{Map, phf_map};
 use unicase::UniCase;
 
 pub(crate) static VOCABULARY: Map<UniCase<&'static str>, Word> = phf_map! {

@@ -120,7 +120,7 @@ impl GameEngine for Game {
             Ok(Command::Quit) => {
                 return Output::Goodbye {
                     text: String::from("Be seeing you..."),
-                }
+                };
             }
             Ok(Command::Nop) => String::new(),
             Err(e) => e.to_string(),

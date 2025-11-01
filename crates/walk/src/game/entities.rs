@@ -32,13 +32,23 @@ impl Entity {
     pub(crate) fn examine(&self) -> &str {
         match self {
             Entity::Banquet => "Judging by the crumbs, the meal was chicken nuggets.",
-            Entity::Books => "You've never heard of any of these titles before, but they all sound interesting!",
-            Entity::Cushions => "The longer you stare at the cushioning, the more you want to just collapse into it.",
+            Entity::Books => {
+                "You've never heard of any of these titles before, but they all sound interesting!"
+            }
+            Entity::Cushions => {
+                "The longer you stare at the cushioning, the more you want to just collapse into it."
+            }
             Entity::Globe => "Wait, that's not Earth.  Where am I?",
-            Entity::Mural => "I don't know much about art, but it certainly looks fancy.  I think it's Art Nouveau?  Art Deco?  Something like that.",
-            Entity::Painting => "There is nothing to describe, except the moon, still bright against the worrying sky.",
+            Entity::Mural => {
+                "I don't know much about art, but it certainly looks fancy.  I think it's Art Nouveau?  Art Deco?  Something like that."
+            }
+            Entity::Painting => {
+                "There is nothing to describe, except the moon, still bright against the worrying sky."
+            }
             Entity::PenguinPhoto => "The penguins are grumpy-looking but are clearly in love.",
-            Entity::SecretPlans => "The plans are all written in code.  You can't make heads or tails of them.",
+            Entity::SecretPlans => {
+                "The plans are all written in code.  You can't make heads or tails of them."
+            }
             Entity::TicTacToe => "X and O are locked in a dead heat.",
         }
     }
