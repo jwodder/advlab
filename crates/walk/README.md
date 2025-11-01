@@ -1,4 +1,4 @@
-[![Minimum Supported Rust Version](https://img.shields.io/badge/MSRV-1.82-orange)](https://www.rust-lang.org)
+[![Minimum Supported Rust Version](https://img.shields.io/badge/MSRV-1.85-orange)](https://www.rust-lang.org)
 [![MIT License](https://img.shields.io/github/license/jwodder/advlab.svg)](https://opensource.org/licenses/MIT)
 
 `walk` is a text adventure (using the term loosely) in which you walk around

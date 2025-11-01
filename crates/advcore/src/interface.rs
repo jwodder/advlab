@@ -1,4 +1,4 @@
-use rustyline::{error::ReadlineError, DefaultEditor};
+use rustyline::{DefaultEditor, error::ReadlineError};
 use std::io::{self, BufRead, Write};
 
 pub trait InterfaceProvider {

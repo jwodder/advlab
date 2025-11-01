@@ -1,7 +1,7 @@
 [![Project Status: Concept – Minimal or no implementation has been done yet, or the repository is only intended to be a limited example, demo, or proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
 [![CI Status](https://github.com/jwodder/advlab/actions/workflows/test.yml/badge.svg)](https://github.com/jwodder/advlab/actions/workflows/test.yml)
 [![codecov.io](https://codecov.io/gh/jwodder/advlab/branch/main/graph/badge.svg)](https://codecov.io/gh/jwodder/advlab)
-[![Minimum Supported Rust Version](https://img.shields.io/badge/MSRV-1.82-orange)](https://www.rust-lang.org)
+[![Minimum Supported Rust Version](https://img.shields.io/badge/MSRV-1.85-orange)](https://www.rust-lang.org)
 [![MIT License](https://img.shields.io/github/license/jwodder/advlab.svg)](https://opensource.org/licenses/MIT)
 
 [GitHub](https://github.com/jwodder/advlab) | [Issues](https://github.com/jwodder/advlab/issues)
