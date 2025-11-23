@@ -1,13 +1,10 @@
 use rustyline::{DefaultEditor, error::ReadlineError};
 use std::io::{self, BufRead, Write};
 
-pub trait InterfaceProvider {
+pub trait InterfaceBuilder: Sized {
     type Interface: Interface;
 
-    /// Run `func` with the associated `Interface`.
-    fn with_interface<F>(self, func: F) -> io::Result<()>
-    where
-        F: FnOnce(&mut Self::Interface) -> io::Result<()>;
+    fn build_interface(self) -> io::Result<Self::Interface>;
 }
 
 pub trait Interface {
@@ -21,33 +18,36 @@ pub trait Interface {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub struct BasicInterfaceBuilder<R, W> {
+    reader: R,
+    writer: W,
+}
+
+impl<R, W> BasicInterfaceBuilder<R, W> {
+    pub fn new(reader: R, writer: W) -> Self {
+        BasicInterfaceBuilder { reader, writer }
+    }
+}
+
+impl<R: BufRead, W: Write> InterfaceBuilder for BasicInterfaceBuilder<R, W> {
+    type Interface = BasicInterface<R, W>;
+
+    fn build_interface(self) -> io::Result<Self::Interface> {
+        Ok(BasicInterface {
+            reader: self.reader,
+            writer: self.writer,
+            wrote_prompt: false,
+            wrote_last_output: false,
+        })
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct BasicInterface<R, W> {
     reader: R,
     writer: W,
     wrote_prompt: bool,
     wrote_last_output: bool,
-}
-
-impl<R, W> BasicInterface<R, W> {
-    pub fn new(reader: R, writer: W) -> Self {
-        BasicInterface {
-            reader,
-            writer,
-            wrote_prompt: false,
-            wrote_last_output: false,
-        }
-    }
-}
-
-impl<R: BufRead, W: Write> InterfaceProvider for BasicInterface<R, W> {
-    type Interface = Self;
-
-    fn with_interface<F>(mut self, func: F) -> io::Result<()>
-    where
-        F: FnOnce(&mut Self::Interface) -> io::Result<()>,
-    {
-        func(&mut self)
-    }
 }
 
 impl<R: BufRead, W: Write> Interface for BasicInterface<R, W> {
@@ -83,44 +83,36 @@ impl<R: BufRead, W: Write> Interface for BasicInterface<R, W> {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct StandardInterface;
+pub struct StandardInterfaceBuilder;
 
-impl InterfaceProvider for StandardInterface {
+impl InterfaceBuilder for StandardInterfaceBuilder {
     type Interface = BasicInterface<io::StdinLock<'static>, io::StdoutLock<'static>>;
 
-    fn with_interface<F>(self, func: F) -> io::Result<()>
-    where
-        F: FnOnce(&mut Self::Interface) -> io::Result<()>,
-    {
-        let mut iface = BasicInterface::new(io::stdin().lock(), io::stdout().lock());
-        func(&mut iface)
+    fn build_interface(self) -> io::Result<Self::Interface> {
+        BasicInterfaceBuilder::new(io::stdin().lock(), io::stdout().lock()).build_interface()
     }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct ReadlineInterface;
+pub struct ReadlineInterfaceBuilder;
 
-impl InterfaceProvider for ReadlineInterface {
-    type Interface = ReadlineInterfaceImpl;
+impl InterfaceBuilder for ReadlineInterfaceBuilder {
+    type Interface = ReadlineInterface;
 
-    fn with_interface<F>(self, func: F) -> io::Result<()>
-    where
-        F: FnOnce(&mut Self::Interface) -> io::Result<()>,
-    {
-        let mut iface = ReadlineInterfaceImpl::new()?;
-        func(&mut iface)
+    fn build_interface(self) -> io::Result<Self::Interface> {
+        ReadlineInterface::new()
     }
 }
 
 #[derive(Debug)]
-pub struct ReadlineInterfaceImpl {
+pub struct ReadlineInterface {
     rl: DefaultEditor,
     stdout: io::StdoutLock<'static>,
     wrote_prompt: bool,
     wrote_last_output: bool,
 }
 
-impl ReadlineInterfaceImpl {
+impl ReadlineInterface {
     fn new() -> io::Result<Self> {
         let cfg = rustyline::config::Builder::new()
             .auto_add_history(true)
@@ -133,7 +125,7 @@ impl ReadlineInterfaceImpl {
             Err(e) => return Err(io::Error::other(e)),
         };
         let stdout = io::stdout().lock();
-        Ok(ReadlineInterfaceImpl {
+        Ok(ReadlineInterface {
             rl,
             stdout,
             wrote_prompt: false,
@@ -142,7 +134,7 @@ impl ReadlineInterfaceImpl {
     }
 }
 
-impl Interface for ReadlineInterfaceImpl {
+impl Interface for ReadlineInterface {
     fn show_output(&mut self, text: &str) -> io::Result<()> {
         if self.wrote_prompt {
             writeln!(&mut self.stdout)?;
