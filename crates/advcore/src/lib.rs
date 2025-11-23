@@ -37,21 +37,20 @@ impl<G> Output<G> {
     }
 }
 
-pub fn run_game<IC: InterfaceProvider, G: GameBuilder>(ifprov: IC, game: G) -> io::Result<()> {
+pub fn run_game<I: InterfaceBuilder, G: GameBuilder>(ifsrc: I, game: G) -> io::Result<()> {
     let mut r = game.start();
-    ifprov.with_interface(move |iface| {
-        loop {
-            iface.show_output(r.text())?;
-            let Some(game) = r.into_game() else {
-                return Ok(());
-            };
-            let Some(input) = iface.get_input()? else {
-                // End of input
-                return Ok(());
-            };
-            r = game.handle_input(&input);
-        }
-    })
+    let mut iface = ifsrc.build_interface()?;
+    loop {
+        iface.show_output(r.text())?;
+        let Some(game) = r.into_game() else {
+            return Ok(());
+        };
+        let Some(input) = iface.get_input()? else {
+            // End of input
+            return Ok(());
+        };
+        r = game.handle_input(&input);
+    }
 }
 
 pub fn io_exit(r: io::Result<()>) -> ExitCode {
